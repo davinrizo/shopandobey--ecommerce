@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 import { addItem } from '../../redux/cart/cart.actions';
 
@@ -13,16 +14,31 @@ import {
 } from './collection-item.styles';
 
 export const CollectionItem = ({ item, addItem }) => {
-  const { name, price, imageUrl } = item;
+  const { id, name, price, imageUrl } = item;
+  const navigate = useNavigate();
+
+  const handleImageClick = () => {
+    navigate(`/product/${id}`);
+  };
+
+  const handleAddToCart = (e) => {
+    e.stopPropagation();
+    addItem(item);
+  };
 
   return (
     <CollectionItemContainer>
-      <BackgroundImage className='image' imageUrl={imageUrl} />
-      <CollectionFooterContainer>
+      <BackgroundImage
+        className='image'
+        imageUrl={imageUrl}
+        onClick={handleImageClick}
+        style={{ cursor: 'pointer' }}
+      />
+      <CollectionFooterContainer onClick={handleImageClick} style={{ cursor: 'pointer' }}>
         <NameContainer>{name}</NameContainer>
-        <PriceContainer>{price}</PriceContainer>
+        <PriceContainer>${price}</PriceContainer>
       </CollectionFooterContainer>
-      <AddButton onClick={() => addItem(item)} inverted>
+      <AddButton onClick={handleAddToCart} inverted>
         Add to cart
       </AddButton>
     </CollectionItemContainer>

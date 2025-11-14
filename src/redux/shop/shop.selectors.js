@@ -28,3 +28,11 @@ export const selectIsCollectionsLoaded = createSelector(
   [selectShop],
   shop => !!shop.collections
 );
+
+export const selectAllCollectionsItems = createSelector(
+  [selectCollectionsForPreview],
+  collections =>
+    collections.reduce((accumulator, collection) => {
+      return [...accumulator, ...collection.items];
+    }, [])
+);
