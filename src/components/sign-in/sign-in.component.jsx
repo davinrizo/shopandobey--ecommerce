@@ -11,6 +11,7 @@ import {
 } from '../../redux/user/user.actions';
 
 import { validateSignInForm, sanitizeInput } from '../../utils/validation.utils';
+import { checkRateLimit, getRateLimitMessage, resetRateLimit } from '../../utils/rate-limiter.utils';
 
 import {
   SignInContainer,
@@ -31,6 +32,15 @@ const SignIn = ({ emailSignInStart, googleSignInStart }) => {
   const handleSubmit = async event => {
     event.preventDefault();
 
+    // Check rate limit
+    const rateLimit = checkRateLimit('SIGN_IN', email);
+    if (!rateLimit.allowed) {
+      setErrors({
+        email: getRateLimitMessage('SIGN_IN', rateLimit.retryAfter)
+      });
+      return;
+    }
+
     // Validate form
     const validation = validateSignInForm(userCredentials);
 
@@ -44,6 +54,10 @@ const SignIn = ({ emailSignInStart, googleSignInStart }) => {
     const sanitizedEmail = sanitizeInput(email);
 
     emailSignInStart(sanitizedEmail, password);
+
+    // Reset rate limit on successful submission
+    // Note: In production, only reset after successful authentication
+    // This requires Redux state updates which we'll handle in the saga
   };
 
   const handleChange = event => {

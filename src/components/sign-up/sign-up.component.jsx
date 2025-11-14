@@ -7,6 +7,7 @@ import FormError from '../form-error/form-error.component';
 
 import { signUpStart } from '../../redux/user/user.actions';
 import { validateSignUpForm, sanitizeInput } from '../../utils/validation.utils';
+import { checkRateLimit, getRateLimitMessage } from '../../utils/rate-limiter.utils';
 
 import { SignUpContainer, SignUpTitle } from './sign-up.styles';
 
@@ -24,6 +25,15 @@ const SignUp = ({ signUpStart }) => {
 
   const handleSubmit = async event => {
     event.preventDefault();
+
+    // Check rate limit
+    const rateLimit = checkRateLimit('SIGN_UP', email);
+    if (!rateLimit.allowed) {
+      setErrors({
+        email: getRateLimitMessage('SIGN_UP', rateLimit.retryAfter)
+      });
+      return;
+    }
 
     // Validate form
     const validation = validateSignUpForm(userCredentials);
