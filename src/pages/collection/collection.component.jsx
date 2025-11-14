@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { useParams } from 'react-router-dom';
 
 import CollectionItem from '../../components/collection-item/collection-item.component';
 
@@ -25,8 +26,13 @@ export const CollectionPage = ({ collection }) => {
   );
 };
 
+const CollectionPageWrapper = (props) => {
+  const { collectionId } = useParams();
+  return <CollectionPage {...props} collectionId={collectionId} />;
+};
+
 const mapStateToProps = (state, ownProps) => ({
-  collection: selectCollection(ownProps.match.params.collectionId)(state)
+  collection: selectCollection(ownProps.collectionId)(state)
 });
 
-export default connect(mapStateToProps)(CollectionPage);
+export default connect(mapStateToProps)(CollectionPageWrapper);

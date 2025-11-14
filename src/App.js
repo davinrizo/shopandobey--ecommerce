@@ -1,5 +1,5 @@
 import React, { useEffect, lazy, Suspense } from 'react';
-import { Switch, Route, Redirect } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 
@@ -28,22 +28,21 @@ const App = ({ checkUserSession, currentUser }) => {
     <div>
       <GlobalStyle />
       <Header />
-      <Switch>
-        <ErrorBoundary>
-          <Suspense fallback={<Spinner />}>
-            <Route exact path='/' component={HomePage} />
-            <Route path='/shop' component={ShopPage} />
-            <Route exact path='/checkout' component={CheckoutPage} />
+      <ErrorBoundary>
+        <Suspense fallback={<Spinner />}>
+          <Routes>
+            <Route path='/' element={<HomePage />} />
+            <Route path='/shop/*' element={<ShopPage />} />
+            <Route path='/checkout' element={<CheckoutPage />} />
             <Route
-              exact
               path='/signin'
-              render={() =>
-                currentUser ? <Redirect to='/' /> : <SignInAndSignUpPage />
+              element={
+                currentUser ? <Navigate to='/' replace /> : <SignInAndSignUpPage />
               }
             />
-          </Suspense>
-        </ErrorBoundary>
-      </Switch>
+          </Routes>
+        </Suspense>
+      </ErrorBoundary>
     </div>
   );
 };

@@ -1,6 +1,18 @@
-import firebase from 'firebase/app';
-import 'firebase/firestore';
-import 'firebase/auth';
+import { initializeApp } from 'firebase/app';
+import {
+  getAuth,
+  GoogleAuthProvider,
+  signInWithPopup,
+  onAuthStateChanged
+} from 'firebase/auth';
+import {
+  getFirestore,
+  doc,
+  getDoc,
+  setDoc,
+  collection,
+  writeBatch
+} from 'firebase/firestore';
 
 const config = {
   apiKey: "AIzaSyBEzA0UHARabh8z4MwGUSSLvGSQrrhV86A",
@@ -13,20 +25,23 @@ const config = {
   measurementId: "G-ZZ7V6G561J"
 };
 
-firebase.initializeApp(config);
+const app = initializeApp(config);
+
+export const auth = getAuth(app);
+export const firestore = getFirestore(app);
 
 export const createUserProfileDocument = async (userAuth, additionalData) => {
   if (!userAuth) return;
 
-  const userRef = firestore.doc(`users/${userAuth.uid}`);
+  const userRef = doc(firestore, 'users', userAuth.uid);
 
-  const snapShot = await userRef.get();
+  const snapShot = await getDoc(userRef);
 
-  if (!snapShot.exists) {
+  if (!snapShot.exists()) {
     const { displayName, email } = userAuth;
     const createdAt = new Date();
     try {
-      await userRef.set({
+      await setDoc(userRef, {
         displayName,
         email,
         createdAt,
@@ -44,11 +59,11 @@ export const addCollectionAndDocuments = async (
   collectionKey,
   objectsToAdd
 ) => {
-  const collectionRef = firestore.collection(collectionKey);
+  const collectionRef = collection(firestore, collectionKey);
 
-  const batch = firestore.batch();
+  const batch = writeBatch(firestore);
   objectsToAdd.forEach(obj => {
-    const newDocRef = collectionRef.doc();
+    const newDocRef = doc(collectionRef);
     batch.set(newDocRef, obj);
   });
 
@@ -75,18 +90,17 @@ export const convertCollectionsSnapshotToMap = collections => {
 
 export const getCurrentUser = () => {
   return new Promise((resolve, reject) => {
-    const unsubscribe = auth.onAuthStateChanged(userAuth => {
-      unsubscribe();
-      resolve(userAuth);
-    }, reject);
+    const unsubscribe = onAuthStateChanged(
+      auth,
+      userAuth => {
+        unsubscribe();
+        resolve(userAuth);
+      },
+      reject
+    );
   });
 };
 
-export const auth = firebase.auth();
-export const firestore = firebase.firestore();
-
-export const googleProvider = new firebase.auth.GoogleAuthProvider();
+export const googleProvider = new GoogleAuthProvider();
 googleProvider.setCustomParameters({ prompt: 'select_account' });
-export const signInWithGoogle = () => auth.signInWithPopup(googleProvider);
-
-export default firebase;
+export const signInWithGoogle = () => signInWithPopup(auth, googleProvider);
