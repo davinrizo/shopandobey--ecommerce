@@ -151,3 +151,13 @@ export const ProductNotFound = styled.div`
     margin-bottom: 30px;
   }
 `;
+
+export const VariantError = styled.div`
+  color: #ff4444;
+  font-size: 14px;
+  margin: 10px 0;
+  padding: 10px;
+  background: #fff3f3;
+  border-left: 3px solid #ff4444;
+  border-radius: 4px;
+`;

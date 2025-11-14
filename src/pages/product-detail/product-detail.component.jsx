@@ -5,6 +5,7 @@ import { createStructuredSelector } from 'reselect';
 
 import CustomButton from '../../components/custom-button/custom-button.component';
 import ProductImageGallery from '../../components/product-image-gallery/product-image-gallery.component';
+import ProductVariants from '../../components/product-variants/product-variants.component';
 import { addItem } from '../../redux/cart/cart.actions';
 import { selectAllCollectionsItems } from '../../redux/shop/shop.selectors';
 
@@ -14,8 +15,6 @@ import {
   BreadcrumbLink,
   BreadcrumbCurrent,
   ProductContentContainer,
-  ProductImageContainer,
-  ProductImage,
   ProductInfoContainer,
   ProductTitle,
   ProductPrice,
@@ -25,25 +24,68 @@ import {
   ProductCategory,
   ButtonContainer,
   BackButton,
-  ProductNotFound
+  ProductNotFound,
+  VariantError
 } from './product-detail.styles';
 
 const ProductDetail = ({ allItems, addItem }) => {
   const { productId } = useParams();
   const navigate = useNavigate();
   const [product, setProduct] = useState(null);
+  const [selectedSize, setSelectedSize] = useState(null);
+  const [selectedColor, setSelectedColor] = useState(null);
+  const [variantError, setVariantError] = useState('');
 
   useEffect(() => {
     if (allItems && allItems.length > 0) {
       const foundProduct = allItems.find(item => item.id === parseInt(productId));
       setProduct(foundProduct);
+
+      // Reset variant selections when product changes
+      setSelectedSize(null);
+      setSelectedColor(null);
+      setVariantError('');
     }
   }, [productId, allItems]);
 
+  const handleSizeChange = (size) => {
+    setSelectedSize(size);
+    setVariantError('');
+  };
+
+  const handleColorChange = (color) => {
+    setSelectedColor(color);
+    setVariantError('');
+  };
+
   const handleAddToCart = () => {
-    if (product) {
-      addItem(product);
+    if (!product) return;
+
+    // Check if variants are required and selected
+    const hasVariants = (product.sizes && product.sizes.length > 0) ||
+                       (product.colors && product.colors.length > 0);
+
+    if (hasVariants) {
+      if (product.sizes && product.sizes.length > 0 && !selectedSize) {
+        setVariantError('Please select a size');
+        return;
+      }
+      if (product.colors && product.colors.length > 0 && !selectedColor) {
+        setVariantError('Please select a color');
+        return;
+      }
     }
+
+    // Add product with variant info
+    const productWithVariants = {
+      ...product,
+      selectedSize,
+      selectedColor,
+      variantId: `${product.id}-${selectedSize || 'default'}-${selectedColor || 'default'}`
+    };
+
+    addItem(productWithVariants);
+    setVariantError('');
   };
 
   const handleGoBack = () => {
@@ -95,6 +137,20 @@ const ProductDetail = ({ allItems, addItem }) => {
               `High-quality ${product.name.toLowerCase()} from our premium collection.
               Crafted with attention to detail and designed for comfort and style.`}
           </ProductDescription>
+
+          {(product.sizes || product.colors) && (
+            <ProductVariants
+              sizes={product.sizes}
+              colors={product.colors}
+              selectedSize={selectedSize}
+              selectedColor={selectedColor}
+              onSizeChange={handleSizeChange}
+              onColorChange={handleColorChange}
+              stock={product.stock}
+            />
+          )}
+
+          {variantError && <VariantError>{variantError}</VariantError>}
 
           <ProductMeta>
             <ProductSKU>SKU: {product.id}</ProductSKU>
