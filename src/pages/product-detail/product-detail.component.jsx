@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 
 import CustomButton from '../../components/custom-button/custom-button.component';
+import ProductImageGallery from '../../components/product-image-gallery/product-image-gallery.component';
 import { addItem } from '../../redux/cart/cart.actions';
 import { selectAllCollectionsItems } from '../../redux/shop/shop.selectors';
 
@@ -80,9 +81,10 @@ const ProductDetail = ({ allItems, addItem }) => {
       </BreadcrumbContainer>
 
       <ProductContentContainer>
-        <ProductImageContainer>
-          <ProductImage src={product.imageUrl} alt={product.name} />
-        </ProductImageContainer>
+        <ProductImageGallery
+          images={product.images || product.imageUrl}
+          productName={product.name}
+        />
 
         <ProductInfoContainer>
           <ProductTitle>{product.name}</ProductTitle>

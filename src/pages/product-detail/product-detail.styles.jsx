@@ -44,27 +44,7 @@ export const ProductContentContainer = styled.div`
   }
 `;
 
-export const ProductImageContainer = styled.div`
-  width: 100%;
-  background: #f8f8f8;
-  border-radius: 8px;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 500px;
-`;
-
-export const ProductImage = styled.img`
-  width: 100%;
-  height: auto;
-  object-fit: cover;
-  transition: transform 0.3s ease;
-
-  &:hover {
-    transform: scale(1.05);
-  }
-`;
+// Image container styles moved to product-image-gallery component
 
 export const ProductInfoContainer = styled.div`
   display: flex;
