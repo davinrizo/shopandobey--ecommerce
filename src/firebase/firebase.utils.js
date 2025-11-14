@@ -15,14 +15,14 @@ import {
 } from 'firebase/firestore';
 
 const config = {
-  apiKey: "AIzaSyBEzA0UHARabh8z4MwGUSSLvGSQrrhV86A",
-  authDomain: "dav-sao.firebaseapp.com",
-  databaseURL: "https://dav-sao.firebaseio.com",
-  projectId: "dav-sao",
-  storageBucket: "dav-sao.appspot.com",
-  messagingSenderId: "866140818503",
-  appId: "1:866140818503:web:9a3f8cc2ebd03cb696f562",
-  measurementId: "G-ZZ7V6G561J"
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
+  databaseURL: process.env.REACT_APP_FIREBASE_DATABASE_URL,
+  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.REACT_APP_FIREBASE_APP_ID,
+  measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID
 };
 
 const app = initializeApp(config);

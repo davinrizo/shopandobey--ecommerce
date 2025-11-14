@@ -1,4 +1,55 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Shop and Obey - E-Commerce Platform
+
+A modern, full-featured e-commerce application built with React 18, Firebase, Redux, and Stripe.
+
+## Features
+
+- User authentication (Email/Password & Google OAuth)
+- Product catalog with Firebase Firestore
+- Shopping cart with Redux state management
+- Secure checkout with Stripe integration
+- Redux Saga for async operations
+- Redux Persist for cart persistence
+- Responsive design with Styled Components
+
+## Quick Start
+
+### Prerequisites
+
+- Node.js 16+ and npm
+- Firebase account
+- Stripe account (test mode)
+
+### Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/yourusername/shopandobey--ecommerce.git
+   cd shopandobey--ecommerce
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Set up environment variables**
+
+   Copy the example environment file:
+   ```bash
+   cp .env.example .env
+   ```
+
+   Then update `.env` with your actual Firebase and Stripe credentials.
+
+   📚 **See [ENV_SETUP.md](./ENV_SETUP.md) for detailed configuration instructions**
+
+4. **Start the development server**
+   ```bash
+   npm start
+   ```
+
+The app will open at [http://localhost:3000](http://localhost:3000)
 
 ## Available Scripts
 
